@@ -21,17 +21,19 @@ def get_smallest_bar(bars):
     return smallest_bar
 
 
-def get_closest_bar(bars, longitude, latitude):
+def get_closest_bar(bars, current_gps_longitude, current_gps_latitude):
     def haversine(bar):
         earth_radius = 6371
         bar_longitude, bar_latitude = bar['geometry']['coordinates']
-        longitude_1, latitude_1, longitude_2, latitude_2 = map(radians, [float(longitude), float(latitude), bar_longitude, bar_latitude])
-        dlon = longitude_2 - longitude_1
-        dlat = latitude_2 - latitude_1
-        arcsin = asin(sqrt(sin(dlat/2)**2 + cos(latitude_1) * cos(latitude_2) * sin(dlon/2) ** 2))
-        distanse = 2 * earth_radius * arcsin
+        longitude_start, latitude_start, longitude_end, latitude_end = map(radians, [float(current_gps_longitude),
+                                                                                     float(current_gps_latitude),
+                                                                                     bar_longitude, bar_latitude])
+        longitude_distance = longitude_end - longitude_start
+        latitude_distance = latitude_end - latitude_start
+        arcsin = asin(sqrt(sin(latitude_distance/2)**2 + cos(latitude_start) * cos(latitude_end) * sin(longitude_distance/2) ** 2))
+        distance = 2 * earth_radius * arcsin
 
-        return distanse
+        return distance
 
     closest_bar = min(bars, key=lambda bar: haversine(bar))
 
@@ -55,8 +57,8 @@ if __name__ == '__main__':
     smallest_bar_address = smallest_bar['properties']['Attributes']['Address']
     print('Самый маленький бар Москвы: {}.\nАдрес: {}\n'.format(smallest_bar_name, smallest_bar_address))
 
-    current_latitude, current_longitude = input('Ведите ваши координаты в формате "latitude, longitude":\n').split(', ')
-    closest_bar = get_closest_bar(bars, current_longitude, current_latitude)
+    current_gps_latitude, current_gps_longitude = input('Ведите ваши координаты в формате "latitude, longitude":\n').split(', ')
+    closest_bar = get_closest_bar(bars, current_gps_longitude, current_gps_latitude)
     closest_bar_name = closest_bar['properties']['Attributes']['Name']
     closest_bar_address = closest_bar['properties']['Attributes']['Address']
     print('Самый ближайший бар к указанным вами координатам: {}.\nАдрес: {}\n'.format(closest_bar_name, closest_bar_address))
