@@ -7,16 +7,20 @@ def load_data(filepath):
         return json.load(file_handler)
 
 
+def get_seats_count(bar):
+    return bar['properties']['Attributes']['SeatsCount']
+
+
 def get_biggest_bar(bars):
 
-    biggest_bar = max(bars, key=lambda bar: bar['properties']['Attributes']['SeatsCount'])
+    biggest_bar = max(bars, key=lambda bar: get_seats_count(bar))
 
     return biggest_bar
 
 
 def get_smallest_bar(bars):
 
-    smallest_bar = min(bars, key=lambda bar: bar['properties']['Attributes']['SeatsCount'])
+    smallest_bar = min(bars, key=lambda bar: get_seats_count(bar))
 
     return smallest_bar
 
@@ -25,9 +29,7 @@ def get_closest_bar(bars, current_gps_longitude, current_gps_latitude):
     def haversine(bar):
         earth_radius = 6371
         bar_longitude, bar_latitude = bar['geometry']['coordinates']
-        longitude_start, latitude_start, longitude_end, latitude_end = map(radians, [float(current_gps_longitude),
-                                                                                     float(current_gps_latitude),
-                                                                                     bar_longitude, bar_latitude])
+        longitude_start, latitude_start, longitude_end, latitude_end = map(radians, [float(current_gps_longitude), float(current_gps_latitude), bar_longitude, bar_latitude])
         longitude_distance = longitude_end - longitude_start
         latitude_distance = latitude_end - latitude_start
         arcsin = asin(sqrt(sin(latitude_distance/2)**2 + cos(latitude_start) * cos(latitude_end) * sin(longitude_distance/2) ** 2))
