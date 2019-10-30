@@ -25,19 +25,39 @@ def get_smallest_bar(bars):
     return smallest_bar
 
 
-def get_closest_bar(bars, current_gps_longitude, current_gps_latitude):
-    def haversine(bar):
-        earth_radius = 6371
-        bar_longitude, bar_latitude = bar['geometry']['coordinates']
-        longitude_start, latitude_start, longitude_end, latitude_end = map(radians, [float(current_gps_longitude), float(current_gps_latitude), bar_longitude, bar_latitude])
-        longitude_distance = longitude_end - longitude_start
-        latitude_distance = latitude_end - latitude_start
-        arcsin = asin(sqrt(sin(latitude_distance/2)**2 + cos(latitude_start) * cos(latitude_end) * sin(longitude_distance/2) ** 2))
-        distance = 2 * earth_radius * arcsin
+def get_bar_coordinates(bar):
+    bar_longitude, bar_latitude = bar['geometry']['coordinates']
 
-        return distance
+    return [bar_longitude, bar_latitude]
 
-    closest_bar = min(bars, key=lambda bar: haversine(bar))
+
+def haversine(longitude_start, latitude_start, longitude_end, latitude_end):
+    earth_radius = 6371
+    longitude_start_in_radians = radians(float(longitude_start))
+    longitude_end_in_radians = radians(float(longitude_end))
+    latitude_start_in_radians = radians(float(latitude_start))
+    latitude_end_in_radians = radians(float(latitude_end))
+
+    longitude_distance = longitude_end_in_radians - longitude_start_in_radians
+    latitude_distance = latitude_end_in_radians - latitude_start_in_radians
+
+    arcsin = asin(sqrt(sin(latitude_distance/2)**2 +
+                       cos(latitude_start_in_radians) *
+                       cos(latitude_end_in_radians) *
+                       sin(longitude_distance/2) ** 2))
+
+    distance = 2 * earth_radius * arcsin
+
+    return distance
+
+
+def get_closest_bar(bars, user_longitude, user_latitude):
+
+    closest_bar = min(bars,
+                      key=lambda bar: haversine(user_longitude,
+                                                user_latitude,
+                                                get_bar_coordinates(bar)[0],
+                                                get_bar_coordinates(bar)[1]))
 
     return closest_bar
 
@@ -52,15 +72,22 @@ if __name__ == '__main__':
     biggest_bar = get_biggest_bar(bars)
     biggest_bar_name = biggest_bar['properties']['Attributes']['Name']
     biggest_bar_address = biggest_bar['properties']['Attributes']['Address']
-    print('Самый большой бар Москвы: {}.\nАдрес: {}\n'.format(biggest_bar_name, biggest_bar_address))
+    biggest_bar_text_template = 'Самый большой бар Москвы: {}.\nАдрес: {}\n'
+    print(biggest_bar_text_template.format(biggest_bar_name,
+                                           biggest_bar_address))
 
     smallest_bar = get_smallest_bar(bars)
     smallest_bar_name = smallest_bar['properties']['Attributes']['Name']
     smallest_bar_address = smallest_bar['properties']['Attributes']['Address']
-    print('Самый маленький бар Москвы: {}.\nАдрес: {}\n'.format(smallest_bar_name, smallest_bar_address))
+    smallest_bar_text_template = 'Самый маленький бар Москвы: {}.\nАдрес: {}\n'
+    print(smallest_bar_text_template.format(smallest_bar_name,
+                                            smallest_bar_address))
 
-    current_gps_latitude, current_gps_longitude = input('Ведите ваши координаты в формате "latitude, longitude":\n').split(', ')
-    closest_bar = get_closest_bar(bars, current_gps_longitude, current_gps_latitude)
+    coordinate_text_template = 'Введите координаты: "latitude, longitude"\n'
+    user_latitude, user_longitude = input(coordinate_text_template).split(', ')
+    closest_bar = get_closest_bar(bars, user_longitude, user_latitude)
     closest_bar_name = closest_bar['properties']['Attributes']['Name']
     closest_bar_address = closest_bar['properties']['Attributes']['Address']
-    print('Самый ближайший бар к указанным вами координатам: {}.\nАдрес: {}\n'.format(closest_bar_name, closest_bar_address))
+    closest_bar_text_template = 'Ближайший бар: {}.\nАдрес: {}\n'
+    print(closest_bar_text_template.format(closest_bar_name,
+                                           closest_bar_address))
