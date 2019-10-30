@@ -72,22 +72,22 @@ if __name__ == '__main__':
     biggest_bar = get_biggest_bar(bars)
     biggest_bar_name = biggest_bar['properties']['Attributes']['Name']
     biggest_bar_address = biggest_bar['properties']['Attributes']['Address']
-    biggest_bar_text_template = 'Самый большой бар Москвы: {}.\nАдрес: {}\n'
+    biggest_bar_text_template = 'Biggest Moscow bar: {}.\nAddress: {}\n'
     print(biggest_bar_text_template.format(biggest_bar_name,
                                            biggest_bar_address))
 
     smallest_bar = get_smallest_bar(bars)
     smallest_bar_name = smallest_bar['properties']['Attributes']['Name']
     smallest_bar_address = smallest_bar['properties']['Attributes']['Address']
-    smallest_bar_text_template = 'Самый маленький бар Москвы: {}.\nАдрес: {}\n'
+    smallest_bar_text_template = 'Smallest Moscow Bar: {}.\nAddress: {}\n'
     print(smallest_bar_text_template.format(smallest_bar_name,
                                             smallest_bar_address))
 
-    coordinate_text_template = 'Введите координаты: "latitude, longitude"\n'
+    coordinate_text_template = 'Input coordinates: latitude, longitude\n'
     user_latitude, user_longitude = input(coordinate_text_template).split(', ')
     closest_bar = get_closest_bar(bars, user_longitude, user_latitude)
     closest_bar_name = closest_bar['properties']['Attributes']['Name']
     closest_bar_address = closest_bar['properties']['Attributes']['Address']
-    closest_bar_text_template = 'Ближайший бар: {}.\nАдрес: {}\n'
+    closest_bar_text_template = 'Closest bar: {}.\nAddress: {}\n'
     print(closest_bar_text_template.format(closest_bar_name,
                                            closest_bar_address))
