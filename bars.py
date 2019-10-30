@@ -63,10 +63,10 @@ def get_closest_bar(bars, user_longitude, user_latitude):
 
 
 if __name__ == '__main__':
-    data = load_data('moscow_bars.json')
+    moscow_bars_data = load_data('moscow_bars.json')
 
     bars = []
-    for bar in data['features']:
+    for bar in moscow_bars_data['features']:
         bars.append(bar)
 
     biggest_bar = get_biggest_bar(bars)
