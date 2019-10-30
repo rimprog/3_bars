@@ -31,7 +31,7 @@ def get_bar_coordinates(bar):
     return [bar_longitude, bar_latitude]
 
 
-def haversine(longitude_start, latitude_start, longitude_end, latitude_end):
+def find_haversine(longitude_start, latitude_start, longitude_end, latitude_end):
     earth_radius = 6371
     longitude_start_in_radians = radians(float(longitude_start))
     longitude_end_in_radians = radians(float(longitude_end))
@@ -54,10 +54,10 @@ def haversine(longitude_start, latitude_start, longitude_end, latitude_end):
 def get_closest_bar(bars, user_longitude, user_latitude):
 
     closest_bar = min(bars,
-                      key=lambda bar: haversine(user_longitude,
-                                                user_latitude,
-                                                get_bar_coordinates(bar)[0],
-                                                get_bar_coordinates(bar)[1]))
+                      key=lambda bar: find_haversine(user_longitude,
+                                                     user_latitude,
+                                                     get_bar_coordinates(bar)[0],
+                                                     get_bar_coordinates(bar)[1]))
 
     return closest_bar
 
