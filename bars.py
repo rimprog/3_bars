@@ -9,31 +9,31 @@ def load_data(filepath):
 
 def get_biggest_bar(data):
 
-    biggest_bar = max(data, key=lambda x: x['properties']['Attributes']['SeatsCount'])
+    biggest_bar = max(data, key=lambda bar: bar['properties']['Attributes']['SeatsCount'])
 
     return biggest_bar
 
 
 def get_smallest_bar(data):
 
-    smallest_bar = min(data, key=lambda x: x['properties']['Attributes']['SeatsCount'])
+    smallest_bar = min(data, key=lambda bar: bar['properties']['Attributes']['SeatsCount'])
 
     return smallest_bar
 
 
 def get_closest_bar(data, longitude, latitude):
     def haversine(bar):
+        earth_radius = 6371
         bar_longitude, bar_latitude = bar['geometry']['coordinates']
         lon1, lat1, lon2, lat2 = map(radians, [float(longitude), float(latitude), bar_longitude, bar_latitude])
         dlon = lon2 - lon1
         dlat = lat2 - lat1
-        a = sin(dlat/2)**2 + cos(lat1) * cos(lat2) * sin(dlon/2) ** 2
-        c = 2 * asin(sqrt(a))
-        earth_radius = 6371
+        arcsin = asin(sqrt(sin(dlat/2)**2 + cos(lat1) * cos(lat2) * sin(dlon/2) ** 2))
+        distanse = 2 * earth_radius * arcsin
 
-        return c * earth_radius
+        return distanse
 
-    closest_bar = min(data, key=lambda x: haversine(x))
+    closest_bar = min(data, key=lambda bar: haversine(bar))
 
     return closest_bar
 
